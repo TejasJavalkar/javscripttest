@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>javascript Validation Form</title>
+        <style>
+            .formdesign {
+                font-size: 20px;
+                margin-top: 10px;
+                display: flex;
+                justify-content: center;
+            }
+
+              .inputs {
+                width: 25%;
+                height: 37px;
+                padding: 5px 10px;
+                outline: none;
+                border: 1px solid black;
+                margin: 20px;
+                border-radius: 0px;
+                font-size: 15px;
+                text-transform: capitalize;
+
+            }
+
+            .dinput {
+                width: 25%;
+                height: 37px;
+                padding: 5px 10px;
+                outline: none;
+                border: 1px solid black;
+                margin: 20px;
+                border-radius: 0px;
+                font-size: 15px;
+                padding-left:40px ;
+            }
+
+            .formdesign button {
+                width: 15%;
+                height: 37px;
+                background-color:transparent;
+                outline: none;
+                border: 1px solid green;
+                margin-left:  80px;
+                border-radius: 0px;
+                font-size: 15px;
+                font-weight: bold;
+            }
+            .formdesign button:hover {
+                background-color:green;
+                color:white;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        
+        <div id="myForm1">
+            <div class="formdesign"><p style="font-size:26px">User Form</p></div>
+            <div class="formdesign">
+                <div style="margin-top: 10px;"><label for="email"><b>Full Name :</b></label></div>
+                <input class="inputs" type="text" id="name" placeholder="Enter Full Name"/>
+                <span style="color:red" id="nerror"></span>
+            
+            </div>
+            <div class="formdesign" style="margin-top: 10px;"><label for="email"><b>Email :&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;</b></label>
+            
+                <input class="dinput" type="email" id="email" placeholder="Enter Email"/>
+                <span style="color:red" id="eerror"></span>
+            </div>
+            <div class="formdesign" style="margin-top: 10px;">
+                <label for="test"><b>Contact No :</b></label>
+            
+                <input type="text" class="dinput" id="test" placeholder="Enter Contact No: (999) 999-9999" />
+                <span style="color:green" id="type3"></span>
+                <span style="color:red" id="merror"></span>
+            </div>
+            <div class="formdesign">
+                <button id="subbtn" onclick="valid()">Check</button>
+            </div>
+        </div>
+
+        <hr>
+        <p style="color:green" id="data"></p>
+        <div id="myForm2" style="display: none;">
+            <div class="formdesign">
+                <label for="test" ><b>OTP :</b></label>
+                <input type="text" class="dinput" id="fotp" name="otp"/>
+            </div>
+            <div class="formdesign">
+                <button id="valbtn" onclick="otpcheck()">Validate</button>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+        var val;
+            document.getElementById('test').addEventListener('input', function (y) {
+                var a = y.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                y.target.value = !a[2] ? a[1] : '(' + a[1] + ') ' + a[2] + (a[3] ? ' ' + a[3] : '');
+                mobileValidation();
+            });
+
+
+            document.getElementById('fotp').addEventListener('input', function (y) {
+                    var a = y.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                 
+                    otpcheck();
+                });
+
+            document.getElementById('name').addEventListener('input', function (y) {
+                nameValidation();
+            });
+
+            document.getElementById('email').addEventListener('input', function (y) {
+                    emailValidation();
+                });
+
+            function valid() {
+
+                let fname = nameValidation();
+                let femail = emailValidation();
+                let fmno= mobileValidation() ;
+
+                
+                sendotp();
+                if (!fname || !femail||!fmno) {
+                    
+                }
+                else {
+                    alert("ok")
+                }
+            }
+            function emailValidation() {
+                let stringemail = document.getElementById('email').value;
+                let status = true;
+                var match = stringemail.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+                if (!match) {
+                    document.getElementById('eerror').innerHTML = "Wrong Email"
+                    status = false
+                }
+                else {
+                    document.getElementById('eerror').innerHTML = " "
+                }
+                return status;
+            }
+
+            function nameValidation() {
+                let string = document.getElementById('name').value
+                let status = true
+                if (string.length == 0) {
+                    document.getElementById('nerror').innerHTML = "Full Name Wrong"
+                    status = false;
+                }
+                else {
+                    document.getElementById('nerror').innerHTML = " "
+                }
+                return status
+            }
+
+            function mobileValidation() {
+                let string = document.getElementById('test').value
+                let len = string.replace(/\D/g, "");
+                let status = true
+                if (len.length == 10) {
+                    let first = string.match(/\d+/)[0];
+                    first.slice(0, 3);
+                    console.log(first);
+
+                    if ((first > 621 && first < 799)) {
+                        document.getElementById('type3').innerHTML = "Jio"
+
+                    }
+                    else if ((first > 801 && first < 920)) {
+                        document.getElementById('type3').innerHTML = "Idea"
+                    }
+                    else {
+                        document.getElementById('type3').innerHTML = "Vodafone"
+                    }
+                    document.getElementById('merror').innerHTML = " "
+                    status = true;
+
+
+
+                }
+                else {
+                    document.getElementById('merror').innerHTML = "Contact Number is Invalid"
+                    document.getElementById('type3').innerHTML = ""
+                    status = false
+                }
+                return status
+            }
+
+            function sendotp() {
+                let string = document.getElementById('test').value
+                let string1 = document.getElementById("name").value;
+                
+                if(string.length==0 || string1.length==0)
+                {
+                    document.getElementById("subbtn").disabled = false;
+                    document.getElementById('data').innerHTML = "All Fields are Required";
+                }
+                else
+                {
+                    let digit = string.replace(/\D/g, "");
+                    let parts = string1.split(' ')
+                    let firstName = parts.shift();  // firstName
+                    val = Math.floor(1000 + Math.random() * 9000);
+                    document.getElementById('data').innerHTML = "Thank you for your inquiry. Dear,"+firstName+"<br/>"+val+" A 4 digit verification number has been sent to your phone number:"+digit+"<br/> please enter in the following box and submit for confirmation";
+                    document.getElementById("myForm1").style.display="none";
+                    document.getElementById("myForm2").style.display = "block";
+                    document.getElementById("subbtn").disabled = true;
+                }                
+            }
+            function otpcheck(){
+                let string=document.getElementById('fotp').value;
+                if(val==string)
+                {
+                    window.location.href='http://pixel6.co';
+                }
+                else
+                {
+                    document.getElementById("myForm1").style.display = "block";
+                    document.getElementById("myForm2").style.display = "none";
+                }
+            }
+        </script>
+    </body>
+
+</html>
